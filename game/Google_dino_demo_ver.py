@@ -22,12 +22,21 @@ font = pygame.font.Font(None, 36)
 
 class Dino:
     def __init__(self):
-        self.jump_image = pygame.image.load("dinoJump0000.png").convert_alpha()
+        self.img_size = (100, 100)
+        self.jump_image = pygame.transform.scale(
+            pygame.image.load("dinoJump0000.png").convert_alpha(), self.img_size
+        )
         self.run_images = [
-            pygame.image.load("dinorun0000.png").convert_alpha(),
-            pygame.image.load("dinorun0001.png").convert_alpha(),
+            pygame.transform.scale(
+                pygame.image.load("dinorun0000.png").convert_alpha(), self.img_size
+            ),
+            pygame.transform.scale(
+                pygame.image.load("dinorun0001.png").convert_alpha(), self.img_size
+            ),
         ]
-        self.dead_image = pygame.image.load("dinoDead0000.png").convert_alpha()
+        self.dead_image = pygame.transform.scale(
+            pygame.image.load("dinoDead0000.png").convert_alpha(), self.img_size
+        )
         self.rect = pygame.Rect(100, ground_y, 80, 80)
         self.gravity = 0
         self.jump = False
