@@ -22,28 +22,29 @@ font = pygame.font.Font(None, 36)
 
 class Dino:
     def __init__(self):
-        self.img_size = (100, 100)
+        self.normal_size = (100, 100)
+        self.duck_size = (200, 50)
         self.jump_image = pygame.transform.scale(
-            pygame.image.load("dinoJump0000.png").convert_alpha(), self.img_size
+            pygame.image.load("dinoJump0000.png").convert_alpha(), self.normal_size
         )
         self.run_images = [
             pygame.transform.scale(
-                pygame.image.load("dinorun0000.png").convert_alpha(), self.img_size
+                pygame.image.load("dinorun0000.png").convert_alpha(), self.normal_size
             ),
             pygame.transform.scale(
-                pygame.image.load("dinorun0001.png").convert_alpha(), self.img_size
+                pygame.image.load("dinorun0001.png").convert_alpha(), self.normal_size
             ),
         ]
         self.duck_images = [
             pygame.transform.scale(
-                pygame.image.load("dinoduck0000.png").convert_alpha(), self.img_size
+                pygame.image.load("dinoduck0000.png").convert_alpha(), self.duck_size
             ),
             pygame.transform.scale(
-                pygame.image.load("dinoduck0001.png").convert_alpha(), self.img_size
+                pygame.image.load("dinoduck0001.png").convert_alpha(), self.duck_size
             ),
         ]
         self.dead_image = pygame.transform.scale(
-            pygame.image.load("dinoDead0000.png").convert_alpha(), self.img_size
+            pygame.image.load("dinoDead0000.png").convert_alpha(), self.normal_size
         )
         self.rect = pygame.Rect(100, ground_y, 80, 80)
         self.gravity = 0
@@ -59,11 +60,15 @@ class Dino:
             if self.animation_count >= 2:
                 self.animation_count = 0
             self.current_image = self.run_images[int(self.animation_count)]
+            self.rect.height = self.normal_size[1]
+            self.rect.y = ground_y - self.normal_size[1]
         elif not self.jump and not self.dead and self.duck:
             self.animation_count += self.animation_speed
             if self.animation_count >= 2:
                 self.animation_count = 0
             self.current_image = self.duck_images[int(self.animation_count)]
+            self.rect.height = self.duck_size[1]
+            self.rect.y = ground_y - self.duck_size[1]
         elif self.jump and not self.dead and not self.duck:
             self.current_image = self.jump_image
         self.gravity += 1
@@ -223,7 +228,6 @@ def main():
         background()
         dino.draw()
         # cactus.draw()
-        berd.draw()
         if game_over:
             show_game_over()
             dino.draw_die()
