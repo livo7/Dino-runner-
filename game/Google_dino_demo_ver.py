@@ -23,7 +23,6 @@ font = pygame.font.Font(None, 36)
 class Dino:
     def __init__(self):
         self.normal_size = (100, 100)
-        self.duck_size = (200, 50)
         self.jump_image = pygame.transform.scale(
             pygame.image.load("dinoJump0000.png").convert_alpha(), self.normal_size
         )
@@ -33,14 +32,6 @@ class Dino:
             ),
             pygame.transform.scale(
                 pygame.image.load("dinorun0001.png").convert_alpha(), self.normal_size
-            ),
-        ]
-        self.duck_images = [
-            pygame.transform.scale(
-                pygame.image.load("dinoduck0000.png").convert_alpha(), self.duck_size
-            ),
-            pygame.transform.scale(
-                pygame.image.load("dinoduck0001.png").convert_alpha(), self.duck_size
             ),
         ]
         self.dead_image = pygame.transform.scale(
@@ -55,21 +46,12 @@ class Dino:
         self.animation_speed = 0.15
 
     def update(self):
-        if not self.jump and not self.dead and not self.duck:
+        if not self.jump and not self.dead:
             self.animation_count += self.animation_speed
             if self.animation_count >= 2:
                 self.animation_count = 0
             self.current_image = self.run_images[int(self.animation_count)]
-            self.rect.height = self.normal_size[1]
-            self.rect.y = ground_y - self.normal_size[1]
-        elif not self.jump and not self.dead and self.duck:
-            self.animation_count += self.animation_speed
-            if self.animation_count >= 2:
-                self.animation_count = 0
-            self.current_image = self.duck_images[int(self.animation_count)]
-            self.rect.height = self.duck_size[1]
-            self.rect.y = ground_y - self.duck_size[1]
-        elif self.jump and not self.dead and not self.duck:
+        elif self.jump and not self.dead:
             self.current_image = self.jump_image
         self.gravity += 1
         self.rect.y += self.gravity
@@ -129,61 +111,6 @@ class Cactus:
         screen.blit(self.image, self.rect)
 
 
-class Berd:
-    def __init__(self):
-        self.berd_tipe = random.randint(1, 3)
-        self.setup_berd()
-        self.speed = 15
-        self.spawn_delay = random.randint(5, 20)
-        self.waiting = True
-        self.delay_counter = 0
-        self.animation_count = 0
-        self.animation_speed = 0.15
-
-    def setup_berd(self):
-        if self.berd_tipe == 1:
-            self.cactus_width = 90
-            self.cactus_height = 80
-            self.fly_images = [
-                pygame.image.load("berd.png").convert_alpha(),
-                pygame.image.load("berd2.png").convert_alpha(),
-            ]
-            self.rect = pygame.Rect(screen_width, ground_y - 75, 90, 80)
-        elif self.berd_tipe == 2:
-            self.cactus_width = 90
-            self.cactus_height = 80
-            self.fly_images = [
-                pygame.image.load("berd.png").convert_alpha(),
-                pygame.image.load("berd2.png").convert_alpha(),
-            ]
-            self.rect = pygame.Rect(screen_width, ground_y - 125, 90, 80)
-        elif self.berd_tipe == 3:
-            self.cactus_width = 90
-            self.cactus_height = 80
-            self.fly_images = [
-                pygame.image.load("berd.png").convert_alpha(),
-                pygame.image.load("berd2.png").convert_alpha(),
-            ]
-            self.rect = pygame.Rect(screen_width, ground_y - 175, 90, 80)
-
-    def update(self):
-        if self.waiting:
-            self.delay_counter += 1
-            if self.delay_counter >= self.spawn_delay:
-                self.waiting = False
-        else:
-            self.rect.x -= self.speed
-            if self.rect.right < 0:
-                self.__init__()
-        self.animation_count += self.animation_speed
-        if self.animation_count >= len(self.fly_images):
-            self.animation_count = 0
-        self.current_image = self.fly_images[int(self.animation_count)]
-
-    def draw(self):
-        screen.blit(self.current_image, self.rect)
-
-
 def background():
     pygame.draw.rect(screen, GROUND_COLOR, (0, ground_y, screen_width, screen_height))
 
@@ -196,38 +123,38 @@ def show_game_over():
 def main():
     dino = Dino()
     cactus = Cactus()
-    berd = Berd()
+    score = 0
     game_run = True
     game_over = False
 
+    last_time = pygame.time.get_ticks()
+
     while game_run:
+        current_time = pygame.time.get_ticks()
+        delta_time = current_time - last_time
+        last_time = current_time
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_run = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and not dino.jump and not game_over and not dino.duck:
+                if event.key == pygame.K_w and not dino.jump and not game_over:
                     dino.gravity = -20
                     dino.jump = True
-                if event.key == pygame.K_s and not dino.jump and not game_over:
-                    dino.duck = True
                 if event.key == pygame.K_r and game_over:
                     main()
                     return
         if not game_over:
-            berd.update()
-            # if random.random() <= 0.7:
-            #     berd.update()
-            # else:
-            #     cactus.update()
+            cactus.update()
             dino.update()
-            if dino.rect.colliderect(berd.rect):
+            score += delta_time / 1000
+            if dino.rect.colliderect(cactus.rect):
                 game_over = True
-            # if dino.rect.colliderect(cactus.rect):
-            #     game_over = True
         screen.fill(WHITE)
         background()
         dino.draw()
-        # cactus.draw()
+        cactus.draw()
+        score_text = font.render(f"Score: {int(score)}", True, BLACK)
+        screen.blit(score_text, (screen_width - 200, 50))
         if game_over:
             show_game_over()
             dino.draw_die()
