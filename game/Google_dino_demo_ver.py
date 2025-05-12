@@ -114,7 +114,7 @@ class Berd:
     def __init__(self):
         self.berd_tipe = random.randint(1, 3)
         self.setup_berd()
-        self.speed = 20
+        self.speed = 15
         self.spawn_delay = random.randint(5, 20)
         self.waiting = True
         self.delay_counter = 0
@@ -177,6 +177,7 @@ def show_game_over():
 def main():
     dino = Dino()
     cactus = Cactus()
+    berd = Berd()
     game_run = True
     game_over = False
 
@@ -192,14 +193,26 @@ def main():
                     main()
                     return
         if not game_over:
+            if random.random() <= 0.7:
+                berd.update()
+                flag = "b"
+            else:
+                cactus.update()
+                flag = "c"
             dino.update()
-            cactus.update()
-            if dino.rect.colliderect(cactus.rect):
-                game_over = True
+            if flag == "b":
+                if dino.rect.colliderect(berd.rect):
+                    game_over = True
+            if flag == "с":
+                if dino.rect.colliderect(cactus.rect):
+                    game_over = True
         screen.fill(WHITE)
         background()
         dino.draw()
-        cactus.draw()
+        if flag == "c":
+            cactus.draw()
+        if flag == "b":
+            berd.draw()
         if game_over:
             show_game_over()
             dino.draw_die()
