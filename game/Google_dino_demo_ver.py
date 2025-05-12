@@ -34,6 +34,14 @@ class Dino:
                 pygame.image.load("dinorun0001.png").convert_alpha(), self.img_size
             ),
         ]
+        self.duck_images = [
+            pygame.transform.scale(
+                pygame.image.load("dinoduck0000.png").convert_alpha(), self.img_size
+            ),
+            pygame.transform.scale(
+                pygame.image.load("dinoduck0001.png").convert_alpha(), self.img_size
+            ),
+        ]
         self.dead_image = pygame.transform.scale(
             pygame.image.load("dinoDead0000.png").convert_alpha(), self.img_size
         )
@@ -41,16 +49,22 @@ class Dino:
         self.gravity = 0
         self.jump = False
         self.dead = False
+        self.duck = False
         self.animation_count = 0
         self.animation_speed = 0.15
 
     def update(self):
-        if not self.jump and not self.dead:
+        if not self.jump and not self.dead and not self.duck:
             self.animation_count += self.animation_speed
-            if self.animation_count >= len(self.run_images):
+            if self.animation_count >= 2:
                 self.animation_count = 0
             self.current_image = self.run_images[int(self.animation_count)]
-        elif self.jump and not self.dead:
+        elif not self.jump and not self.dead and self.duck:
+            self.animation_count += self.animation_speed
+            if self.animation_count >= 2:
+                self.animation_count = 0
+            self.current_image = self.duck_images[int(self.animation_count)]
+        elif self.jump and not self.dead and not self.duck:
             self.current_image = self.jump_image
         self.gravity += 1
         self.rect.y += self.gravity
@@ -186,33 +200,30 @@ def main():
             if event.type == pygame.QUIT:
                 game_run = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and not dino.jump and not game_over:
+                if event.key == pygame.K_w and not dino.jump and not game_over and not dino.duck:
                     dino.gravity = -20
                     dino.jump = True
+                if event.key == pygame.K_s and not dino.jump and not game_over:
+                    dino.duck = True
                 if event.key == pygame.K_r and game_over:
                     main()
                     return
         if not game_over:
-            if random.random() <= 0.7:
-                berd.update()
-                flag = "b"
-            else:
-                cactus.update()
-                flag = "c"
+            berd.update()
+            # if random.random() <= 0.7:
+            #     berd.update()
+            # else:
+            #     cactus.update()
             dino.update()
-            if flag == "b":
-                if dino.rect.colliderect(berd.rect):
-                    game_over = True
-            if flag == "с":
-                if dino.rect.colliderect(cactus.rect):
-                    game_over = True
+            if dino.rect.colliderect(berd.rect):
+                game_over = True
+            # if dino.rect.colliderect(cactus.rect):
+            #     game_over = True
         screen.fill(WHITE)
         background()
         dino.draw()
-        if flag == "c":
-            cactus.draw()
-        if flag == "b":
-            berd.draw()
+        # cactus.draw()
+        berd.draw()
         if game_over:
             show_game_over()
             dino.draw_die()
