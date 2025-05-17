@@ -116,8 +116,14 @@ def background():
 
 
 def show_game_over():
-    text = font.render("Game Over", True, GRAY)
-    screen.blit(text, (screen_width // 2, screen_height // 2))
+    text1 = font.render("Game Over", True, GRAY)
+    text1_rect = text1.get_rect(center=(screen_width // 2, screen_height // 2 - 20))
+
+    text2 = font.render("Press ~R~", True, GRAY)
+    text2_rect = text2.get_rect(center=(screen_width // 2, screen_height // 2 + 20))
+
+    screen.blit(text1, text1_rect)
+    screen.blit(text2, text2_rect)
 
 
 def main():
