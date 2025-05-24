@@ -110,12 +110,24 @@ class Cactus:
             if self.cactus_type == 1:
                 self.cactus_width, self.cactus_height = 60, 120
                 self.image = pygame.image.load("cactusBig0000.png").convert_alpha()
+                self.image = pygame.transform.scale(
+                    self.image, (self.cactus_width, self.cactus_height)
+                )
+                self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y + 15))
             elif self.cactus_type == 2:
                 self.cactus_width, self.cactus_height = 40, 80
                 self.image = pygame.image.load("cactusSmall0000.png").convert_alpha()
+                self.image = pygame.transform.scale(
+                    self.image, (self.cactus_width, self.cactus_height)
+                )
+                self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y + 15))
             elif self.cactus_type == 3:
                 self.cactus_width, self.cactus_height = 120, 80
                 self.image = pygame.image.load("cactusSmallMany0000.png").convert_alpha()
+                self.image = pygame.transform.scale(
+                    self.image, (self.cactus_width, self.cactus_height)
+                )
+                self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y + 15))
         except (pygame.error, FileNotFoundError) as e:
             print(f"Ошибка загрузки кактуса (тип {self.cactus_type}): {e}")
             # черные прямоугольники как заглушки
