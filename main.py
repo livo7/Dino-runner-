@@ -39,18 +39,18 @@ class Dino:
         self.current_image = None
         try:
             self.jump_image = pygame.transform.scale(
-                pygame.image.load("dinoJump0000.png").convert_alpha(), self.normal_size
+                pygame.image.load("png/dinoJump0000.png").convert_alpha(), self.normal_size
             )
             self.run_images = [
                 pygame.transform.scale(
-                    pygame.image.load("dinorun0000.png").convert_alpha(), self.normal_size
+                    pygame.image.load("png/dinorun0000.png").convert_alpha(), self.normal_size
                 ),
                 pygame.transform.scale(
-                    pygame.image.load("dinorun0001.png").convert_alpha(), self.normal_size
+                    pygame.image.load("png/dinorun0001.png").convert_alpha(), self.normal_size
                 ),
             ]
             self.dead_image = pygame.transform.scale(
-                pygame.image.load("dinoDead0000.png").convert_alpha(), self.normal_size
+                pygame.image.load("png/dinoDead0000.png").convert_alpha(), self.normal_size
             )
             self.current_image = self.run_images[0]
         except (pygame.error, FileNotFoundError) as e:
@@ -109,21 +109,21 @@ class Cactus:
         try:
             if self.cactus_type == 1:
                 self.cactus_width, self.cactus_height = 60, 120
-                self.image = pygame.image.load("cactusBig0000.png").convert_alpha()
+                self.image = pygame.image.load("png/cactusBig0000.png").convert_alpha()
                 self.image = pygame.transform.scale(
                     self.image, (self.cactus_width, self.cactus_height)
                 )
                 self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y + 15))
             elif self.cactus_type == 2:
                 self.cactus_width, self.cactus_height = 40, 80
-                self.image = pygame.image.load("cactusSmall0000.png").convert_alpha()
+                self.image = pygame.image.load("png/cactusSmall0000.png").convert_alpha()
                 self.image = pygame.transform.scale(
                     self.image, (self.cactus_width, self.cactus_height)
                 )
                 self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y + 15))
             elif self.cactus_type == 3:
                 self.cactus_width, self.cactus_height = 120, 80
-                self.image = pygame.image.load("cactusSmallMany0000.png").convert_alpha()
+                self.image = pygame.image.load("png/cactusSmallMany0000.png").convert_alpha()
                 self.image = pygame.transform.scale(
                     self.image, (self.cactus_width, self.cactus_height)
                 )
