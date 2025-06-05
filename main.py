@@ -4,7 +4,7 @@ import sys
 
 pygame.init()
 
-# настройка экрана
+# Настройка окна игры
 screen_width = 1800
 screen_height = 800
 ground_height = 100
@@ -13,6 +13,7 @@ FPS = 30
 
 clock = pygame.time.Clock()
 
+# Создание окна с игрой
 try:
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Google_dino")
@@ -20,12 +21,13 @@ except pygame.error as e:
     print(f"Ошибка инициализации экрана: {e}")
     sys.exit(1)
 
-# цвета
+# Цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GROUND_COLOR = (200, 200, 200)
 GRAY = (83, 83, 83)
 
+# Инициализация текста (шрифта)
 try:
     font = pygame.font.Font(None, 36)
 except pygame.error as e:
@@ -37,6 +39,7 @@ class Dino:
     def __init__(self):
         self.normal_size = (100, 100)
         self.current_image = None
+        # Инициализация спрайтов Wichi
         try:
             self.jump_image = pygame.transform.scale(
                 pygame.image.load("png/dinoJump0000.png").convert_alpha(), self.normal_size
@@ -55,7 +58,8 @@ class Dino:
             self.current_image = self.run_images[0]
         except (pygame.error, FileNotFoundError) as e:
             print(f"Ошибка загрузки изображений динозавра: {e}")
-            # черные прямоугольники как заглушки
+
+            # Черный прямоугольник как заглушка
             self.jump_image = pygame.Surface(self.normal_size)
             self.jump_image.fill(BLACK)
             self.run_images = [pygame.Surface(self.normal_size) for _ in range(2)]
@@ -72,6 +76,7 @@ class Dino:
         self.animation_count = 0
         self.animation_speed = 0.15
 
+    # Обновление спрайтов Wichi и физика
     def update(self):
         if not self.jump and not self.dead:
             self.animation_count += self.animation_speed
@@ -106,6 +111,7 @@ class Cactus:
         self.delay_counter = 0
 
     def setup_cactus(self):
+        # Инициализация спрайтов кактусов, которые так не любит Wichi
         try:
             if self.cactus_type == 1:
                 self.cactus_width, self.cactus_height = 60, 120
@@ -130,12 +136,14 @@ class Cactus:
                 self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y + 15))
         except (pygame.error, FileNotFoundError) as e:
             print(f"Ошибка загрузки кактуса (тип {self.cactus_type}): {e}")
-            # черные прямоугольники как заглушки
+
+            # Черные прямоугольники как заглушки
             self.cactus_width, self.cactus_height = 60, 120
             self.image = pygame.Surface((self.cactus_width, self.cactus_height))
             self.image.fill(BLACK)
             self.rect = self.image.get_rect(bottomleft=(screen_width, ground_y))
 
+    # Обновление спрайтов кактусов и их перемещение (да, Wichi на самом деле стоит на месте)
     def update(self):
         if self.waiting:
             self.delay_counter += 1
@@ -146,17 +154,20 @@ class Cactus:
             if self.rect.right < 0:
                 self.__init__()
 
+    # Создание спрайтов
     def draw(self):
         screen.blit(self.image, self.rect)
 
 
+# Создание бэкграунда
 def background():
     pygame.draw.rect(screen, GROUND_COLOR, (0, ground_y, screen_width, screen_height))
 
 
+# Проекция надписи "GAME OVER"
 def show_game_over():
     try:
-        text1 = font.render("Game Over", True, GRAY)
+        text1 = font.render("GAME OVER", True, GRAY)
         text1_rect = text1.get_rect(center=(screen_width // 2, screen_height // 2 - 20))
         text2 = font.render("Press ~R~", True, GRAY)
         text2_rect = text2.get_rect(center=(screen_width // 2, screen_height // 2 + 20))
@@ -167,6 +178,7 @@ def show_game_over():
         print(f"Ошибка отображения Game Over: {e}")
 
 
+# Игра
 def main():
     try:
         dino = Dino()
@@ -191,12 +203,14 @@ def main():
                             dino.gravity = -20
                             dino.jump = True
                         if event.key == pygame.K_r and game_over:
-                            return main()  # рестарт игрыn
+                            return main()
+                # Зестарт игры
                 if not game_over:
                     cactus.update()
                     dino.update()
                     score += delta_time / 1000
-                    if dino.rect.colliderect(cactus.rect):  # проверка соприкосновения
+                    # Проверка соприкосновения
+                    if dino.rect.colliderect(cactus.rect):
                         game_over = True
                         dino.draw_die()
 
